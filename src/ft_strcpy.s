@@ -1,17 +1,19 @@
 global ft_strcpy
 
 section .text
+
 	ft_strcpy:
 		mov rcx, 0
-		loop:
+	
+	strcpy_loop:
 			cmp byte [rsi + rcx], 0
-			je done
+			je strcpy_done
 			mov al, [rsi + rcx]
 			mov [rdi, rcx], al
 			inc rcx
-			jmp loop
-	done:
+			jmp strcpy_loop
+
+	strcpy_done:
 		mov byte [rdi + rcx], 0
-		mov rax, rsi
+		mov rax, rdi
 		ret
-		
