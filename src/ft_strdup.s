@@ -1,7 +1,6 @@
 global ft_strdup
 
 extern malloc
-; extern memcpy
 extern ft_strcpy
 extern ft_strlen
 
@@ -13,46 +12,47 @@ section .text
     ft_strdup:
         test rdi, rdi
         je .strdup_null_str
-
-        ; push rdi
-
-        mov r9, rdi
-
+        mov rsi, rdi
         call ft_strlen
-        add rax, 1
 
+        push rsi
+
+        inc rax
         mov rdi, rax
-
-        push r9
-
-        call malloc
-
-        pop r9
-
-        ; test rax, rax
-        ; je .malloc_error
-
+        mov rbx, 12
+        call malloc wrt ..plt
         mov rdi, rax
-        mov rsi, r9
-        ; pop rsi
-        ; mov rdx, rcx
+        pop rsi
         call ft_strcpy
         ret
+        
 
-    ; .malloc_error:
-    ;     mov rax, 1
-    ;     mov rdi, 2
-    ;     mov rsi, malloc_error
-    ;     mov rdx, 13
-    ;     syscall
-    ;     mov rax, 0
-    ;     ret
+    .malloc_error:
+        mov rax, 1
+        mov rdi, 2
+        mov rsi, malloc_error
+        mov rdx, 13
+        syscall
+        mov rax, 0
+        ret
 
-    ; .strdup_null_str:
-    ;     mov rax, 1
-    ;     mov rdi, 2
-    ;     mov rsi, null_str_err_msg
-    ;     mov rdx, 12
-    ;     syscall
-    ;     mov rax, 0
-    ;     ret
+    .strdup_null_str:
+        mov rax, 1
+        mov rdi, 2
+        mov rsi, null_str_err_msg
+        mov rdx, 12
+        syscall
+        mov rax, 0
+        ret
+
+
+;  ajouter error sur les erreur voit man strdup
+    .error:
+        push rbx
+        neg rax    ; get absolute value of syscall return
+        mov rbx, rax
+        call __ernno_location
+        mov [rax], rbx  ; set the value of errno
+        mov rax, -1
+        pop rbx
+        ret

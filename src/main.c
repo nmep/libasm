@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <string.h>
 #include <unistd.h>
+#include <stdlib.h>
+#include <errno.h>
 
 int			ft_strlen(char *str);
 char		*ft_strcpy(char *dest, char *src);
@@ -8,6 +10,10 @@ int			ft_strcmp(char *s1, char *s2);
 int			ft_write(int fd, const void *buf, size_t count);
 ssize_t 	ft_read(int fd, void *buf, size_t count);
 char		*ft_strdup(const char *s);
+
+// bonus
+
+int			ft_atoi_base(char *str, char *base);
 
 int	main(int ac, char **av)
 {
@@ -44,7 +50,14 @@ int	main(int ac, char **av)
 
 
 	// ft_strdup
-	printf("ft_strdup = [%s]\n", ft_strdup("bonjour"));
+	// printf("ft_strdup = [%s]\n", ft_strdup("bonjour"));
+
+	// write(1, "qwer", 6);
+
+
+	// BONUS
+
+	printf("atoi_base = [%d]\n", ft_atoi_base("1234", "013456789"));
 
 	return 0;
 }
