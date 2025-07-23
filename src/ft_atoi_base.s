@@ -32,7 +32,7 @@ section .text
         xor rcx, rcx
         .ft_atoi_base.loop_til_rsi_i_end:
             cmp byte [rsi + rcx], 0
-            je .ft_atoi_base.exec
+            je .ft_atoi_base.num_parsing
 
             .ft_atoi_base.loop_til_rsi_j_end:
                 xor r8, r8 
@@ -42,7 +42,7 @@ section .text
                     mov al, [rsi + rcx]
                     mov dl, [rsi + r8]
                     cmp byte al, dl
-                    je .ft_atoi_base.return_0
+                    je .ft_atoi_base.cmp_index
                     inc r8
                     jmp .ft_atoi_base.loop_til_rsi_j_end_check_double
                 .ft_atoi_base.check_syntax:
@@ -55,7 +55,6 @@ section .text
                     cmp byte [rsi + rcx], 0x09; '\t'
                     je .ft_atoi_base.return_0
                     cmp byte [rsi + rcx], 0x0A; '\n'
-                    je .ft_atoi_base.return_0
                     je .ft_atoi_base.return_0
                     cmp byte [rsi + rcx], 0x0B; '\v'
                     je .ft_atoi_base.return_0
@@ -70,6 +69,27 @@ section .text
                 
             inc rcx
             jmp .ft_atoi_base.loop_til_rsi_i_end
+
+    .ft_atoi_base.num_parsing:
+        cmp rcx, 2
+        jl .ft_atoi_base.return_0
+        xor rcx, rcx
+        .ft_atoi_base.num_parsing_loop:
+            cmp byte [rdi + rcx], 0
+            je .ft_atoi_base.exec
+            mov al, [rdi + rcx]
+            cmp al, '0'
+            jb .ft_atoi_base.return_0
+            cmp al, '9'
+            ja .ft_atoi_base.return_0
+            inc rcx
+            jmp .ft_atoi_base.num_parsing_loop
+
+    .ft_atoi_base.cmp_index:
+        cmp r8, rcx
+        jne .ft_atoi_base.return_0
+        inc r8
+        jmp .ft_atoi_base.loop_til_rsi_j_end_check_double
 
     .ft_atoi_base.exec:
         mov rax, 1
