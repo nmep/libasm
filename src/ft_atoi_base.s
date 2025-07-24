@@ -35,7 +35,7 @@ section .text
             je .ft_atoi_base.num_parsing
 
             .ft_atoi_base.loop_til_rsi_j_end:
-                xor r8, r8 
+                xor r8, r8
                 .ft_atoi_base.loop_til_rsi_j_end_check_double:
                     cmp byte [rsi + r8], 0
                     je .ft_atoi_base.check_syntax
@@ -66,23 +66,23 @@ section .text
                     je .ft_atoi_base.return_0
                     cmp byte [rsi + rcx], 0x2D; '+'
                     je .ft_atoi_base.return_0
-                
+
             inc rcx
             jmp .ft_atoi_base.loop_til_rsi_i_end
 
     .ft_atoi_base.num_parsing:
         cmp rcx, 2
         jl .ft_atoi_base.return_0
-        xor rcx, rcx
+        xor r9, r9
         .ft_atoi_base.num_parsing_loop:
-            cmp byte [rdi + rcx], 0
+            cmp byte [rdi + r9], 0
             je .ft_atoi_base.exec
-            mov al, [rdi + rcx]
+            mov al, [rdi + r9]
             cmp al, '0'
             jb .ft_atoi_base.return_0
             cmp al, '9'
             ja .ft_atoi_base.return_0
-            inc rcx
+            inc r9
             jmp .ft_atoi_base.num_parsing_loop
 
     .ft_atoi_base.cmp_index:
@@ -92,8 +92,57 @@ section .text
         jmp .ft_atoi_base.loop_til_rsi_j_end_check_double
 
     .ft_atoi_base.exec:
-        mov rax, 1
-        ret
+        ; rcx -> base_len
+        ; r9 -> num
+        xor rax, rax
+        mov r8, -1
+        ; while (rdi[r8] == ' ' || rdi[r8] == '\t')
+            ; i++
+        .ft_atoi_base.skip_white_space:
+            cmp byte [rdi + r8], ' '
+            je .ft_atoi_base.inc_r8_white_space
+            cmp byte [rdi + r8], '\t'
+            je .ft_atoi_base.inc_r8_white_space
+            jmp .ft_atoi_base.skip_white_space
+
+        .ft_atoi_base.inc_r8_white_space:
+            inc r8
+            jmp .ft_atoi_base.skip_white_space
+
+        .ft_atoi_base.skip_symbole:
+            cmp byte [rdi + r8], '-'
+            je .ft_atoi_base.inc_r8_symbol_neg
+            cmp byte [rdi + r8], '+'
+            je .ft_atoi_base.inc_r8_symbol_pos
+            jmp .ft_atoi_base.exec.mult_with_baseLen
+
+        .ft_atoi_base.inc_r8_symbol_neg:
+            
+            inc r8
+
+        .ft_atoi_base.inc_r8_symbol_pos:
+            inc r8
+            jmp .ft_atoi_base.skip_symbole
+
+
+        .ft_atoi_base.exec.mult_with_baseLen:
+            inc r8
+            cmp byte [rdi + r8], 0
+            je .ft_atoi_base.done
+            mul rcx
+            xor r10, r10
+            .ft_atoi_base.exec.find_Value_From_Base:
+                cmp byte [rsi + r10], 0
+                je .ft_atoi_base.return_0
+                mov dl, [rdi + r8]
+                cmp byte [rsi + r10], dl
+                je .ft_atoi_base.exec.add_Value_From_Base
+                inc r10
+                jmp .ft_atoi_base.exec.find_Value_From_Base
+
+        .ft_atoi_base.exec.add_Value_From_Base:
+            add rax, r10
+            jmp .ft_atoi_base.exec.mult_with_baseLen
 
     .ft_atoi_base.return_0:
         mov rax, 0
@@ -105,4 +154,7 @@ section .text
 
     .ft_atoi_base.base_is_null:
         mov rax, -1
+        ret
+
+    .ft_atoi_base.done:
         ret
