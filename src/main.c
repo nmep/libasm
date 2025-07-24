@@ -57,7 +57,7 @@ int	main(int ac, char **av)
 
 	// BONUS
 
-	printf("atoi_base = [%d]\n", ft_atoi_base(av[1], av[2]));
+	// printf("atoi_base = [%d]\n", ft_atoi_base(av[1], av[2]));
 
 	return 0;
 }

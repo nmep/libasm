@@ -14,6 +14,7 @@ section .text
         je .ft_atoi_base.str_is_null
         test rsi, rsi
         je .ft_atoi_base.base_is_null
+        mov r11, 1
 
     ; while (base[i])
     ; {
@@ -117,8 +118,10 @@ section .text
             jmp .ft_atoi_base.exec.mult_with_baseLen
 
         .ft_atoi_base.inc_r8_symbol_neg:
-            
+            imul -1, r11
             inc r8
+            jmp .ft_atoi_base.skip_symbole
+
 
         .ft_atoi_base.inc_r8_symbol_pos:
             inc r8
