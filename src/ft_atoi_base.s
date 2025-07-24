@@ -79,12 +79,25 @@ section .text
             cmp byte [rdi + r9], 0
             je .ft_atoi_base.exec
             mov al, [rdi + r9]
+            cmp al, '-'
+            je .ft_atoi_base.num_parsing_loop.skip_char
+            cmp al, '+'
+            je .ft_atoi_base.num_parsing_loop.skip_char
+            cmp al, ' '
+            je .ft_atoi_base.num_parsing_loop.skip_char
+            cmp al, 0x09
+            je .ft_atoi_base.num_parsing_loop.skip_char
             cmp al, '0'
             jb .ft_atoi_base.return_0
             cmp al, '9'
             ja .ft_atoi_base.return_0
             inc r9
             jmp .ft_atoi_base.num_parsing_loop
+
+        .ft_atoi_base.num_parsing_loop.skip_char:
+            inc r9
+            jmp .ft_atoi_base.num_parsing_loop
+            
 
     .ft_atoi_base.cmp_index:
         cmp r8, rcx
@@ -96,36 +109,36 @@ section .text
         ; rcx -> base_len
         ; r9 -> num
         xor rax, rax
-        mov r8, -1
+        xor r8, r8
+
         ; while (rdi[r8] == ' ' || rdi[r8] == '\t')
             ; i++
-        .ft_atoi_base.skip_white_space:
-            cmp byte [rdi + r8], ' '
+        .ft_atoi_base.skip_white_space: 
+            cmp byte [rdi + r8], 0x20
             je .ft_atoi_base.inc_r8_white_space
-            cmp byte [rdi + r8], '\t'
+            cmp byte [rdi + r8], 0x09
             je .ft_atoi_base.inc_r8_white_space
-            jmp .ft_atoi_base.skip_white_space
+            jmp .ft_atoi_base.skip_symbole
 
         .ft_atoi_base.inc_r8_white_space:
             inc r8
             jmp .ft_atoi_base.skip_white_space
+
+        .ft_atoi_base.inc_r8_symbol_neg:
+            imul r11, -1
+            inc r8
+            jmp .ft_atoi_base.skip_symbole
+
+        .ft_atoi_base.inc_r8_symbol_pos:
+            inc r8
+            jmp .ft_atoi_base.skip_symbole
 
         .ft_atoi_base.skip_symbole:
             cmp byte [rdi + r8], '-'
             je .ft_atoi_base.inc_r8_symbol_neg
             cmp byte [rdi + r8], '+'
             je .ft_atoi_base.inc_r8_symbol_pos
-            jmp .ft_atoi_base.exec.mult_with_baseLen
-
-        .ft_atoi_base.inc_r8_symbol_neg:
-            imul -1, r11
-            inc r8
-            jmp .ft_atoi_base.skip_symbole
-
-
-        .ft_atoi_base.inc_r8_symbol_pos:
-            inc r8
-            jmp .ft_atoi_base.skip_symbole
+            sub r8, 1 ; sub 1 a r8 pour inc au debut du label suivant
 
 
         .ft_atoi_base.exec.mult_with_baseLen:
@@ -147,6 +160,8 @@ section .text
             add rax, r10
             jmp .ft_atoi_base.exec.mult_with_baseLen
 
+
+
     .ft_atoi_base.return_0:
         mov rax, 0
         ret
@@ -160,4 +175,5 @@ section .text
         ret
 
     .ft_atoi_base.done:
+        mul r11
         ret

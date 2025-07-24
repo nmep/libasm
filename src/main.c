@@ -4,6 +4,13 @@
 #include <stdlib.h>
 #include <errno.h>
 
+typedef struct s_list
+{
+	void *data;
+	struct s_list *next;
+} t_list;
+
+
 int			ft_strlen(char *str);
 char		*ft_strcpy(char *dest, char *src);
 int			ft_strcmp(char *s1, char *s2);
@@ -14,6 +21,13 @@ char		*ft_strdup(const char *s);
 // bonus
 
 int			ft_atoi_base(char *str, char *base);
+
+t_list	*ft_lst_new(void *data)
+{
+	t_list	*node = malloc(sizeof(t_list));
+	node->data = data;
+	return node;
+}
 
 int	main(int ac, char **av)
 {
@@ -57,7 +71,14 @@ int	main(int ac, char **av)
 
 	// BONUS
 
-	// printf("atoi_base = [%d]\n", ft_atoi_base(av[1], av[2]));
+	// printf("atoi_base = [%d]\n", ft_atoi_base(" --9", av[1]));
+	// printf("atoi = %d\n", atoi(av[1]));	
 
+	// push front
+
+	int num = 5;
+	t_list	*list = ft_lst_new(&num);
+
+	printf("node data = %d\n", *(int *)list->data);
 	return 0;
 }
