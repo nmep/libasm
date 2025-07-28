@@ -21,13 +21,27 @@ char		*ft_strdup(const char *s);
 // bonus
 
 int			ft_atoi_base(char *str, char *base);
+void			ft_list_push_front(t_list **lst, t_list *new);
+
 
 t_list	*ft_lst_new(void *data)
 {
 	t_list	*node = malloc(sizeof(t_list));
 	node->data = data;
+	node->next = NULL;
 	return node;
 }
+
+void	ft_print_list(t_list *list)
+{
+	t_list *tmp = list;
+	while (tmp)
+	{
+		printf("data = %d\n", *(int *)(tmp->data));
+		tmp = tmp->next;
+	}
+}
+
 
 int	main(int ac, char **av)
 {
@@ -62,12 +76,10 @@ int	main(int ac, char **av)
 	// printf("read = [%s] | bytes read = %d\n", buff1, bytes_read);
 	// printf("ft_read = [%s] | bytes read = %d\n", buff2, bytes_ft_read);
 
-
 	// ft_strdup
 	// printf("ft_strdup = [%s]\n", ft_strdup("bonjour"));
 
 	// write(1, "qwer", 6);
-
 
 	// BONUS
 
@@ -77,8 +89,18 @@ int	main(int ac, char **av)
 	// push front
 
 	int num = 5;
+	int num2 = 10;
 	t_list	*list = ft_lst_new(&num);
+	t_list	*new = ft_lst_new(&num2);
 
-	printf("node data = %d\n", *(int *)list->data);
+	// printf("node data = %d\n", *(int *)list->data);
+	printf("list avant push front\n");
+
+	ft_print_list(list);
+	ft_list_push_front(&list, new);
+
+	printf("list apres push front\n");
+	ft_print_list(list);
+
 	return 0;
 }
