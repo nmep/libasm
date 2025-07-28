@@ -21,7 +21,7 @@ char		*ft_strdup(const char *s);
 // bonus
 
 int			ft_atoi_base(char *str, char *base);
-void			ft_list_push_front(t_list **lst, t_list *new);
+void		ft_list_push_front(t_list **lst, t_list *new);
 
 
 t_list	*ft_lst_new(void *data)
@@ -93,10 +93,10 @@ int	main(int ac, char **av)
 	t_list	*list = ft_lst_new(&num);
 	t_list	*new = ft_lst_new(&num2);
 
-	// printf("node data = %d\n", *(int *)list->data);
-	printf("list avant push front\n");
-
+	printf("node data = %d\n", *(int *)list->data);
+	
 	ft_print_list(list);
+	printf("list avant push front\n");
 	ft_list_push_front(&list, new);
 
 	printf("list apres push front\n");
