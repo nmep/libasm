@@ -1,18 +1,8 @@
 global ft_list_remove_if
-extern printf
 extern free
+
 ; void		ft_list_remove_if(t_list **begin_list, void *data_ref, int (*cmp)(), void (*free_fct)(void *));
 
-section .data
-	msg db "qwer", 10, 0
-	
-	print_prev_and_curr db "rbx = %d et r12 = %d", 10, 0
-	print_rbx_r12_addr db "rbx = %p and r12 = %p", 10, 0
-	print_rdi_addr db "rdi = %p", 10, 0
-	rax_val_1 db "1 rax = %d", 10, 0
-	rax_val_2 db "2 rax = %d", 10, 0
-
-	space_msg db "--------------------------", 10, 0
 
 section .text
 	ft_list_remove_if:
@@ -48,20 +38,8 @@ section .text
 
 	.loop_next:
 		; je boucle sur toute la liste
-		mov rdi, space_msg
-		sub rsp, 8
-		call printf
-		add rsp, 8
-
 		test r12, r12
 		je .done_ret_0
-
-		mov rdi, print_rbx_r12_addr
-		mov rsi, rbx
-		mov rdx, r12
-		sub rsp, 8
-		call printf
-		add rsp, 8
 
 		;  ici faire la cmp avec void *data du noeud et cmp
 		mov rdi, [r12]
@@ -103,7 +81,7 @@ section .text
 		; free r12
 		mov rdi, r12
 		push r8
-		call free
+		call free wrt ..plt
 		pop r8
 
 		; ici r12 est vide je ne peux donc pas l'inc dans inc r12
@@ -132,17 +110,11 @@ section .text
 		mov rdi, rbx
 
 		sub rsp, 8
-		call free
+		call free wrt ..plt
 		add rsp, 8
 
 		mov [rbp], r12
-		mov rdi, print_rbx_r12_addr
-		mov rsi, rbx
-		mov rdx, r12
-		sub rsp, 8
-		call printf
-		add rsp, 8
-		
+
 		; je mets rbx a 0
 		xor rbx, rbx
 		jmp .loop_next
@@ -160,19 +132,3 @@ section .text
 		pop r12
 		mov rax, 0
 		ret
-
-
-
-	; j'ai fait la boucle c;est ok 
-	; l'appel de cmp c'est ok 
-	; 	si la cmp est bonne il va dans occ find
-
-	; dans occ find je dois supp le noeud sur lequel je suis
-
-	; rbx est a 0 au debut car si rbx = 0 alors je suis sur le premier noeud
-	; et je ne pourrais pas lier le precedent du premier noeud a son next car il n'existe pas
-
-	; donc il faut save le prev apres la premiere iteration, mais c'est fait l 54
-	; il faudrait juste check sa valeurs sur chaque itteration pour en etre sur
-
-	; ensuite dans occ find supp le noeud et lie rbx avec le next de r12

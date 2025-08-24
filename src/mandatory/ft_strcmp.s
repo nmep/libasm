@@ -18,7 +18,7 @@
 				jmp loop
 
 		return:
-			movsx rax, al;
+			movsx rax, al; movsx deplace le contenu d'un registre de 32, 16, 8 bit et de le move dans un de 64
 			movsx rdx, dl;
 			sub rax, rdx; s1 - s2	
 			ret
